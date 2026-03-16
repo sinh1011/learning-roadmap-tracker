@@ -1,62 +1,24 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Roadmap Tracker</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 Learning Roadmap Tracker</title>
+<link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div>
-                <h1>📚 Learning Roadmap Tracker</h1>
-                <div class="sync-status" id="sync-status">Status: Local storage only</div>
-            </div>
-            <div class="header-actions">
-                <button class="btn" id="open-sync-config">⚙️ Sync with Google Sheets</button>
-            </div>
-        </header>
-
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="overall-progress">0%</div>
-                <div class="stat-label">Overall Progress</div>
-                <div class="progress-container">
-                    <div class="progress-fill" id="overall-progress-bar"></div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="tasks-done">0</div>
-                <div class="stat-label">Tasks Completed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="days-count">0</div>
-                <div class="stat-label">Total Days</div>
-            </div>
-        </section>
-
-        <main id="roadmap-container">
-            <!-- Roadmap content will be injected here -->
-        </main>
-    </div>
-
-    <div id="config-modal">
-        <div class="modal-content">
-            <h2>⚙️ Google Sheets Sync</h2>
-            <p>Paste your Google Apps Script Web App URL to enable syncing your progress across all devices.</p>
-            <input type="text" id="sync-url" placeholder="https://script.google.com/macros/s/.../exec">
-            <div class="modal-actions">
-                <button class="btn-secondary" id="close-modal">Cancel</button>
-                <button class="btn" id="save-sync-config">Save &amp; Sync</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="js/data.js?v=3"></script>
-    <script src="js/app.js?v=3"></script>
+<div class="container">
+<header><div><h1>📚 Learning Roadmap Tracker</h1><div id="sync-status" class="sync-status">Status: Local storage</div></div><button class="btn" id="open-sync">⚙️ Sync</button></header>
+<section class="stats-grid">
+<div class="stat-card"><div class="stat-value" id="overall-progress">0%</div><div class="stat-label">Overall Progress</div><div class="progress-container"><div class="progress-fill" id="overall-progress-bar"></div></div></div>
+<div class="stat-card"><div class="stat-value" id="tasks-done">0</div><div class="stat-label">Tasks Done</div></div>
+<div class="stat-card"><div class="stat-value" id="days-count">0</div><div class="stat-label">Total Days</div></div>
+</section>
+<main id="roadmap-container"></main>
+</div>
+<div id="config-modal"><div class="modal-content"><h2>⚙️ Google Sheets Sync</h2><p>Paste Google Apps Script Web App URL:</p><input type="text" id="sync-url" placeholder="https://script.google.com/macros/s/.../exec"><div class="modal-actions"><button class="btn-secondary" id="close-modal">Cancel</button><button class="btn" id="save-sync">Save</button></div></div></div>
+<script>
+const DATA=[{id:"stage0",title:"Giai đoạn 0 – Ôn JS (Hoàn thành)",desc:"Bạn đã làm xong phần JS core rồi 🔥",items:[{id:"s0_letconst",text:"let / const",doneByDefault:true},{id:"s0_arrow",text:"Arrow function",doneByDefault:true},{id:"s0_destructuring",text:"Destructuring",doneByDefault:true},{id:"s0_spread",text:"Spread operator",doneByDefault:true},{id:"s0_mapfilterreduce",text:"map / filter / reduce",doneByDefault:true}]},{id:"stage1",title:"Giai đoạn 1 – React Core (2–3 tuần)",desc:"Đi đều từng ngày là lên tay nhanh lắm 😤",sections:[{id:"day1",title:"Day 1 – Setup & JSX",items:[{id:"d1_vite",text:"Tạo project bằng Vite"},{id:"d1_jsx",text:"Hiểu JSX là gì"},{id:"d1_app",text:"Tạo component App"},{id:"d1_component",text:"1️⃣ Component là gì"},{id:"d1_jsx2",text:"2️⃣ JSX là gì"},{id:"d1_props",text:"3️⃣ Props"},{id:"d1_state",text:"4️⃣ State (useState)"},{id:"d1_list",text:"5️⃣ Render list (map)"}]},{id:"day2",title:"Day 2 – Component & Props",items:[{id:"d2_split",text:"Tách component"},{id:"d2_props",text:"Truyền props"},{id:"d2_destructure",text:"Destructuring props"}]},{id:"day3",title:"Day 3 – useState",items:[{id:"d3_concept",text:"Khái niệm state"},{id:"d3_setstate",text:"setState đúng cách"},{id:"d3_counter",text:"Counter app"}]},{id:"day4",title:"Day 4 – Event & Conditional Rendering",items:[{id:"d4_events",text:"onClick / onChange"},{id:"d4_conditional",text:"Điều kiện &&, ? :"},{id:"d4_toggle",text:"Toggle show/hide"}]},{id:"day5",title:"Day 5 – Render List",items:[{id:"d5_map",text:"map render list"},{id:"d5_key",text:"key là gì"},{id:"d5_todo_show",text:"Todo list hiển thị"}]},{id:"day6",title:"Day 6 – Form & Input",items:[{id:"d6_controlled",text:"Controlled component"},{id:"d6_form_add",text:"Form add todo"}]},{id:"day7",title:"Day 7 – Lifting State",items:[{id:"d7_lift",text:"Đưa state lên component cha"},{id:"d7_callback",text:"Truyền callback"}]},{id:"day8",title:"Day 8 – useEffect cơ bản",items:[{id:"d8_once",text:"useEffect chạy 1 lần"},{id:"d8_deps",text:"Dependency array"}]},{id:"day9",title:"Day 9 – useEffect + API",items:[{id:"d9_fetch",text:"Fetch API"},{id:"d9_loading",text:"Loading / error"}]},{id:"day10",title:"Day 10 – Mini Project",items:[{id:"d10_todo_full",text:"Todo app hoàn chỉnh"},{id:"d10_localstorage",text:"LocalStorage"}]}]}];const SK='learning_roadmap_progress',CK='learning_roadmap_sync_config';let P=loadP(),SC=loadSC();const $=(s)=>document.getElementById(s),rc=$('roadmap-container'),pt=$('overall-progress'),pb=$('overall-progress-bar'),td=$('tasks-done'),dc=$('days-count'),ss=$('sync-status'),cm=$('config-modal'),su=$('sync-url');function loadP(){try{const s=localStorage.getItem(SK);return s?JSON.parse(s):{};}catch(e){return {};}}function saveP(){localStorage.setItem(SK,JSON.stringify(P));updateStats();if(SC.url)sync();}function loadSC(){try{const s=localStorage.getItem(CK);return s?JSON.parse(s):{url:''};}catch(e){return {url:''};}}function saveSC(u){SC.url=u;localStorage.setItem(CK,JSON.stringify(SC));}function flatAll(d){const it=[];d.forEach(s=>{if(s.items)it.push(...s.items);if(s.sections)s.sections.forEach(c=>{if(c.items)it.push(...c.items);});});return it;}function applyDef(){let ch=false;flatAll(DATA).forEach(i=>{if(i.doneByDefault&&!(i.id in P)){P[i.id]=true;ch=true;}});if(ch)saveP();}function updateStats(){const all=flatAll(DATA),tot=all.length,dn=all.filter(i=>P[i.id]).length,pct=tot?Math.round(dn/tot*100):0;pt.textContent=pct+'%';pb.style.width=pct+'%';td.textContent=dn;dc.textContent=DATA.reduce((a,s)=>a+(s.sections?s.sections.length:0),0);}function badgeCls(d,t){if(!t)return 'badge-low';const p=Math.round(d/t*100);return p>=75?'badge-ok':p>=35?'badge-mid':'badge-low';}function render(){rc.innerHTML='';DATA.forEach(st=>{const cd=document.createElement('div');cd.className='stage-card';const h=document.createElement('div');h.className='stage-header';const h2=document.createElement('h2');h2.textContent=st.title;h.appendChild(h2);if(st.desc){const p=document.createElement('p');p.style.cssText='margin:0.25rem 0 0;font-size:0.875rem;color:var(--text-muted);';p.textContent=st.desc;h.appendChild(p);}cd.appendChild(h);if(st.items){const w=document.createElement('div');w.className='stage-items';w.appendChild(rList(st.items));cd.appendChild(w);}if(st.sections){st.sections.forEach(sc=>{const se=document.createElement('div');se.className='day-section';const dc=sc.items.filter(i=>P[i.id]).length,tt=sc.items.length;const tr=document.createElement('div');tr.className='day-title';const h3=document.createElement('h3');h3.textContent=sc.title;const bg=document.createElement('span');bg.className='stat-badge '+badgeCls(dc,tt);bg.textContent=dc+'/'+tt;tr.appendChild(h3);tr.appendChild(bg);se.appendChild(tr);se.appendChild(rList(sc.items));cd.appendChild(se);});}rc.appendChild(cd);});}function rList(its){const ul=document.createElement('ul');ul.className='task-list';ul.style.cssText='list-style:none;padding:0;margin:0;';its.forEach(it=>{const li=document.createElement('li');li.className='task-item'+(P[it.id]?' done':'');li.dataset.id=it.id;const lb=document.createElement('label');lb.style.cssText='display:flex;align-items:center;gap:0.75rem;cursor:pointer;width:100%;';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!P[it.id];const sp=document.createElement('span');sp.textContent=it.text;lb.appendChild(cb);lb.appendChild(sp);li.appendChild(lb);ul.appendChild(li);});return ul;}rc.addEventListener('change',e=>{if(e.target.type!=='checkbox')return;const li=e.target.closest('.task-item');if(!li)return;const id=li.dataset.id;P[id]=e.target.checked;li.classList.toggle('done',e.target.checked);const ds=li.closest('.day-section');if(ds){const ls=ds.querySelectorAll('.task-item');let dc=0;ls.forEach(l=>{if(l.classList.contains('done'))dc++;});const bg=ds.querySelector('.stat-badge');if(bg){bg.textContent=dc+'/'+ls.length;bg.className='stat-badge '+badgeCls(dc,ls.length);}}saveP();});$('open-sync').addEventListener('click',()=>{su.value=SC.url;cm.style.display='flex';});$('close-modal').addEventListener('click',()=>{cm.style.display='none';});$('save-sync').addEventListener('click',()=>{saveSC(su.value.trim());cm.style.display='none';checkSync();});cm.addEventListener('click',e=>{if(e.target===cm)cm.style.display='none';});async function checkSync(){if(!SC.url){ss.textContent='Status: Local storage';return;}ss.textContent='Status: Syncing...';try{const r=await fetch(SC.url+'?action=get');const d=await r.json();if(d&&typeof d==='object'){Object.assign(P,d);saveP();render();ss.textContent='Status: Synced ✓';}}catch(e){console.error(e);ss.textContent='Status: Sync failed';}}async function sync(){if(!SC.url)return;try{await fetch(SC.url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'set',data:P})});ss.textContent='Status: Synced ✓';}catch(e){console.error(e);}}applyDef();render();updateStats();checkSync();
+</script>
 </body>
 </html>
