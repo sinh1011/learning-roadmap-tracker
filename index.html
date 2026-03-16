@@ -13,11 +13,11 @@
     <div class="container">
         <header>
             <div>
-                <h1>Learning Roadmap Tracker</h1>
+                <h1>📚 Learning Roadmap Tracker</h1>
                 <div class="sync-status" id="sync-status">Status: Local storage only</div>
             </div>
             <div class="header-actions">
-                <button class="btn" id="open-sync-config">⚙️ Sync Config</button>
+                <button class="btn" id="open-sync-config">⚙️ Sync with Google Sheets</button>
             </div>
         </header>
 
@@ -46,11 +46,11 @@
 
     <div id="config-modal">
         <div class="modal-content">
-            <h2>Google Sheets Sync</h2>
-            <p>Paste your Google Apps Script Web App URL to enable syncing across devices.</p>
+            <h2>⚙️ Google Sheets Sync</h2>
+            <p>Paste your Google Apps Script Web App URL to enable syncing your progress across all devices.</p>
             <input type="text" id="sync-url" placeholder="https://script.google.com/macros/s/.../exec">
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn" style="background: var(--border)" id="close-modal">Cancel</button>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="close-modal">Cancel</button>
                 <button class="btn" id="save-sync-config">Save & Sync</button>
             </div>
         </div>
