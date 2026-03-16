@@ -1,5 +1,3 @@
-import { DATA } from './data.js';
-
 const STORAGE_KEY = 'learning_roadmap_progress';
 const SYNC_CONFIG_KEY = 'learning_roadmap_sync_config';
 
