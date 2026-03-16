@@ -16,12 +16,27 @@ const syncStatusText = document.getElementById('sync-status');
 const configModal = document.getElementById('config-modal');
 const syncUrlInput = document.getElementById('sync-url');
 
-// Initialization
 function init() {
+    // Apply defaults for first time users
+    applyDefaults();
     renderRoadmap();
     updateStats();
     setupEventListeners();
     checkSync();
+}
+
+function applyDefaults() {
+    let changed = false;
+    DATA.forEach(stage => {
+        const items = stage.items || [];
+        items.forEach(item => {
+            if (item.doneByDefault && !(item.id in progress)) {
+                progress[item.id] = true;
+                changed = true;
+            }
+        });
+    });
+    if (changed) saveProgressToStorage();
 }
 
 function loadProgress() {
@@ -29,12 +44,14 @@ function loadProgress() {
     return saved ? JSON.parse(saved) : {};
 }
 
-function saveProgress() {
+function saveProgressToStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+function saveProgress() {
+    saveProgressToStorage();
     updateStats();
-    if (syncConfig.url) {
-        syncWithGoogleSheets();
-    }
+    if (syncConfig.url) syncWithGoogleSheets();
 }
 
 function loadSyncConfig() {
@@ -53,11 +70,13 @@ function updateStats() {
     const done = allItems.filter(item => progress[item.id]).length;
     const percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
-    overallProgressText.textContent = \`\${percent}%\`;
-    overallProgressBar.style.width = \`\${percent}%\`;
+    overallProgressText.textContent = `${percent}%`;
+    overallProgressBar.style.width = `${percent}%`;
     tasksDoneText.textContent = done;
-    
-    const totalDays = DATA.reduce((acc, stage) => acc + (stage.sections ? stage.sections.length : 0), 0);
+
+    const totalDays = DATA.reduce((acc, stage) => {
+        return acc + (stage.sections ? stage.sections.length : 0);
+    }, 0);
     daysCountText.textContent = totalDays;
 }
 
@@ -74,76 +93,89 @@ function flattenItems(data) {
     return items;
 }
 
+function renderTaskList(items) {
+    return items.map(item => `
+        <div class="task-item ${progress[item.id] ? 'done' : ''}" data-id="${item.id}">
+            <input type="checkbox" ${progress[item.id] ? 'checked' : ''}>
+            <span>${item.text}</span>
+        </div>
+    `).join('');
+}
+
 function renderRoadmap() {
     roadmapContainer.innerHTML = '';
     DATA.forEach(stage => {
         const stageCard = document.createElement('div');
         stageCard.className = 'stage-card';
-        
-        let sectionsHtml = '';
+
+        let bodyHtml = '';
+
+        // Stage with direct items (e.g. stage0)
+        if (stage.items && stage.items.length) {
+            bodyHtml += `<div class="stage-items"><div class="task-list">${renderTaskList(stage.items)}</div></div>`;
+        }
+
+        // Stage with sections (e.g. stage1)
         if (stage.sections) {
             stage.sections.forEach(section => {
-                const itemsHtml = section.items.map(item => \`
-                    <div class="task-item \${progress[item.id] ? 'done' : ''}" data-id="\${item.id}">
-                        <input type="checkbox" \${progress[item.id] ? 'checked' : ''}>
-                        <span>\${item.text}</span>
-                    </div>
-                \`).join('');
-                
-                sectionsHtml += \`
+                const done = section.items.filter(it => progress[it.id]).length;
+                const total = section.items.length;
+                bodyHtml += `
                     <div class="day-section">
                         <div class="day-title">
-                            <h3>\${section.title}</h3>
-                            <span class="stat-label">\${section.items.filter(it => progress[it.id]).length}/\${section.items.length}</span>
+                            <h3>${section.title}</h3>
+                            <span class="stat-label">${done}/${total}</span>
                         </div>
-                        <div class="task-list">
-                            \${itemsHtml}
-                        </div>
+                        <div class="task-list">${renderTaskList(section.items)}</div>
                     </div>
-                \`;
+                `;
             });
         }
 
-        stageCard.innerHTML = \`
+        stageCard.innerHTML = `
             <div class="stage-header">
-                <h2>\${stage.title}</h2>
-                <p class="stat-label">\${stage.desc || ''}</p>
+                <h2>${stage.title}</h2>
+                ${stage.desc ? `<p class="stat-label">${stage.desc}</p>` : ''}
             </div>
-            \${sectionsHtml}
-        \`;
+            ${bodyHtml}
+        `;
         roadmapContainer.appendChild(stageCard);
     });
 }
 
 function setupEventListeners() {
+    roadmapContainer.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox') {
+            const taskItem = e.target.closest('.task-item');
+            if (!taskItem) return;
+            const id = taskItem.dataset.id;
+            progress[id] = e.target.checked;
+            taskItem.classList.toggle('done', e.target.checked);
+
+            // Update section counter if inside a day-section
+            const daySection = taskItem.closest('.day-section');
+            if (daySection) {
+                const h3Text = daySection.querySelector('h3').textContent;
+                let sectionItems = [];
+                DATA.forEach(s => {
+                    if (s.sections) {
+                        const sec = s.sections.find(sec => sec.title === h3Text);
+                        if (sec) sectionItems = sec.items;
+                    }
+                });
+                const doneCount = sectionItems.filter(it => progress[it.id]).length;
+                daySection.querySelector('.stat-label').textContent = `${doneCount}/${sectionItems.length}`;
+            }
+            saveProgress();
+        }
+    });
+
     roadmapContainer.addEventListener('click', (e) => {
         const taskItem = e.target.closest('.task-item');
-        if (taskItem) {
-            const id = taskItem.dataset.id;
-            const checkbox = taskItem.querySelector('input');
-            
-            if (e.target !== checkbox) {
-                checkbox.checked = !checkbox.checked;
-            }
-            
-            progress[id] = checkbox.checked;
-            taskItem.classList.toggle('done', checkbox.checked);
-            
-            const daySection = taskItem.closest('.day-section');
-            const dayTitle = daySection.querySelector('h3').textContent;
-            
-            let sectionItems = [];
-            DATA.forEach(s => {
-                if (s.sections) {
-                    const sec = s.sections.find(sec => sec.title === dayTitle);
-                    if (sec) sectionItems = sec.items;
-                }
-            });
-            
-            const doneCount = sectionItems.filter(it => progress[it.id]).length;
-            daySection.querySelector('.stat-label').textContent = \`\${doneCount}/\${sectionItems.length}\`;
-            
-            saveProgress();
+        if (taskItem && e.target.type !== 'checkbox') {
+            const cb = taskItem.querySelector('input[type=checkbox]');
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event('change', { bubbles: true }));
         }
     });
 
@@ -162,6 +194,10 @@ function setupEventListeners() {
         configModal.style.display = 'none';
         checkSync();
     });
+
+    configModal.addEventListener('click', (e) => {
+        if (e.target === configModal) configModal.style.display = 'none';
+    });
 }
 
 async function checkSync() {
@@ -171,17 +207,17 @@ async function checkSync() {
     }
     syncStatusText.textContent = 'Status: Syncing...';
     try {
-        const response = await fetch(syncConfig.url);
-        const remoteData = await response.json();
+        const res = await fetch(syncConfig.url);
+        const remoteData = await res.json();
         if (remoteData && typeof remoteData === 'object') {
             progress = { ...progress, ...remoteData };
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            saveProgressToStorage();
             renderRoadmap();
             updateStats();
-            syncStatusText.textContent = 'Status: Synced with Google Sheets';
+            syncStatusText.textContent = 'Status: Synced ✓';
         }
-    } catch (error) {
-        console.error('Sync failed:', error);
+    } catch (err) {
+        console.error('Sync fetch failed:', err);
         syncStatusText.textContent = 'Status: Sync failed';
     }
 }
@@ -195,10 +231,9 @@ async function syncWithGoogleSheets() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(progress)
         });
-        syncStatusText.textContent = 'Status: Synced with Google Sheets';
-    } catch (error) {
-        console.error('Post sync failed:', error);
-        syncStatusText.textContent = 'Status: Sync failed (POST)';
+        syncStatusText.textContent = 'Status: Synced ✓';
+    } catch (err) {
+        console.error('Sync post failed:', err);
     }
 }
 
