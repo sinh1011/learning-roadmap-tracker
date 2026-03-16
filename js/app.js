@@ -91,18 +91,26 @@ function renderRoadmap() {
         const card = document.createElement('div');
         card.className = 'stage-card';
 
+        // Stage header
         const head = document.createElement('div');
-        head.className = 'stage-head';
-        head.innerHTML = '<h2>' + stage.title + '</h2>' +
-            (stage.desc ? '<p class="stage-desc">' + stage.desc + '</p>' : '');
+        head.className = 'stage-header';
+        const h2 = document.createElement('h2');
+        h2.textContent = stage.title;
+        head.appendChild(h2);
+        if (stage.desc) {
+            const p = document.createElement('p');
+            p.style.cssText = 'margin:0.25rem 0 0; font-size:0.875rem; color:var(--text-muted);';
+            p.textContent = stage.desc;
+            head.appendChild(p);
+        }
         card.appendChild(head);
-
-        const body = document.createElement('div');
-        body.className = 'stage-body';
 
         // Stage with direct items (e.g. stage0)
         if (stage.items && stage.items.length) {
-            body.appendChild(renderList(stage.items));
+            const wrap = document.createElement('div');
+            wrap.className = 'stage-items';
+            wrap.appendChild(renderList(stage.items));
+            card.appendChild(wrap);
         }
 
         // Stage with sections (e.g. stage1 with days)
@@ -115,18 +123,22 @@ function renderRoadmap() {
                 const total = sec.items.length;
                 const cls = badgeClass(doneCount, total);
 
-                const secHead = document.createElement('div');
-                secHead.className = 'section-head';
-                secHead.innerHTML =
-                    '<h3>' + sec.title + '</h3>' +
-                    '<span class="stat-badge ' + cls + '">' + doneCount + '/' + total + '</span>';
-                secEl.appendChild(secHead);
+                const titleRow = document.createElement('div');
+                titleRow.className = 'day-title';
+                const h3 = document.createElement('h3');
+                h3.textContent = sec.title;
+                const badge = document.createElement('span');
+                badge.className = 'stat-badge ' + cls;
+                badge.textContent = doneCount + '/' + total;
+                titleRow.appendChild(h3);
+                titleRow.appendChild(badge);
+
+                secEl.appendChild(titleRow);
                 secEl.appendChild(renderList(sec.items));
-                body.appendChild(secEl);
+                card.appendChild(secEl);
             });
         }
 
-        card.appendChild(body);
         roadmapContainer.appendChild(card);
     });
 }
@@ -134,12 +146,21 @@ function renderRoadmap() {
 function renderList(items) {
     const ul = document.createElement('ul');
     ul.className = 'task-list';
+    ul.style.listStyle = 'none';
+    ul.style.padding = '0';
+    ul.style.margin = '0';
     for (const item of items) {
         const li = document.createElement('li');
         li.className = 'task-item' + (progress[item.id] ? ' done' : '');
         li.dataset.id = item.id;
 
         const label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '0.75rem';
+        label.style.cursor = 'pointer';
+        label.style.width = '100%';
+
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.checked = !!progress[item.id];
@@ -156,7 +177,6 @@ function renderList(items) {
 }
 
 function setupEventListeners() {
-    // Checkbox changes via event delegation
     roadmapContainer.addEventListener('change', e => {
         if (e.target.type !== 'checkbox') return;
         const li = e.target.closest('.task-item');
@@ -165,7 +185,7 @@ function setupEventListeners() {
         progress[id] = e.target.checked;
         li.classList.toggle('done', e.target.checked);
 
-        // Update section badge
+        // Update day section badge
         const secEl = li.closest('.day-section');
         if (secEl) {
             const allLis = secEl.querySelectorAll('.task-item');
@@ -181,18 +201,6 @@ function setupEventListeners() {
         saveProgressToStorage();
         updateStats();
         if (syncConfig.url) syncWithGoogleSheets();
-    });
-
-    // Click on li also toggles checkbox
-    roadmapContainer.addEventListener('click', e => {
-        const li = e.target.closest('.task-item');
-        if (li && e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL') {
-            const cb = li.querySelector('input[type=checkbox]');
-            if (cb) {
-                cb.checked = !cb.checked;
-                cb.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        }
     });
 
     // Sync modal
