@@ -1,4 +1,4 @@
-export const DATA = [
+const DATA = [
   {
     id: \"stage0\",
     title: \"Giai đoạn 0 – Ôn JS (Hoàn thành)\",
