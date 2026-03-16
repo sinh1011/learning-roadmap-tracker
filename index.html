@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Roadmap Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Learning Roadmap Tracker</h1>
+                <div class="sync-status" id="sync-status">Status: Local storage only</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn" id="open-sync-config">⚙️ Sync Config</button>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="overall-progress">0%</div>
+                <div class="stat-label">Overall Progress</div>
+                <div class="progress-container">
+                    <div class="progress-fill" id="overall-progress-bar"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="tasks-done">0</div>
+                <div class="stat-label">Tasks Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="days-count">0</div>
+                <div class="stat-label">Total Days</div>
+            </div>
+        </section>
+
+        <main id="roadmap-container">
+            <!-- Roadmap content will be injected here -->
+        </main>
+    </div>
+
+    <div id="config-modal">
+        <div class="modal-content">
+            <h2>Google Sheets Sync</h2>
+            <p>Paste your Google Apps Script Web App URL to enable syncing across devices.</p>
+            <input type="text" id="sync-url" placeholder="https://script.google.com/macros/s/.../exec">
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn" style="background: var(--border)" id="close-modal">Cancel</button>
+                <button class="btn" id="save-sync-config">Save & Sync</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
