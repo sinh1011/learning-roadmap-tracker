@@ -246,3 +246,35 @@ input[type="text"]:focus { border-color: var(--primary); }
   .stats-grid { grid-template-columns: 1fr; }
   header { flex-direction: column; align-items: flex-start; }
 }
+
+/* Stat badges for day sections */
+.stat-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  white-space: nowrap;
+}
+.stat-badge.badge-ok {
+  border-color: rgba(34,197,94,0.4);
+  background: rgba(34,197,94,0.1);
+  color: #22c55e;
+}
+.stat-badge.badge-mid {
+  border-color: rgba(245,158,11,0.4);
+  background: rgba(245,158,11,0.1);
+  color: #f59e0b;
+}
+.stat-badge.badge-low {
+  border-color: rgba(239,68,68,0.4);
+  background: rgba(239,68,68,0.1);
+  color: #ef4444;
+}
+
+/* Stage items padding */
+.stage-items {
+  padding: 1.5rem;
+}
